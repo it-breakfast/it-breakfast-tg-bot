@@ -6,8 +6,8 @@ from aiogram.filters import CommandStart, Command
 
 default_router = Router()
 
-@default_router.message()
-async def default_handler(CommandStart()) -> None:
+@default_router.message(CommandStart())
+async def default_handler(message: Message) -> None:
     await message.answer('Извините, я не говорю по-русски.', )
                         #  reply_markup=get_menu_kb()) 
 
