@@ -69,7 +69,6 @@ async def on_successful_payment(message: Message, bot: Bot):
         await bot.send_message(
             CHAT_ID,
             text=f"Казна пополнена на {message.successful_payment.total_amount}",
-            message_effect_id="5104841245755180586",
         )
 
     await asyncio.gather(
