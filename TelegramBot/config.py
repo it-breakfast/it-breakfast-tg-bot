@@ -2,4 +2,4 @@ import os
 
 BOT_TOKEN = os.environ['BOT_TOKEN']
 CHAT_ID   = os.environ['CHAT_ID']
-ADMINS = [103737240]
+ADMINS = [103737240, 162950259, 210139749]
