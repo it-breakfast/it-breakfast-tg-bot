@@ -1,3 +1,5 @@
+import asyncio
+
 from TelegramBot.keyboards.main import get_menu_kb
 
 from aiogram import Bot
@@ -10,7 +12,7 @@ from aiogram.filters import CommandStart, Command, CommandObject
 from aiogram.exceptions import TelegramBadRequest
 
 from TelegramBot.helpers.admin_filter import IsAdmin
-from TelegramBot.config import admins
+from TelegramBot.config import ADMINS, CHAT_ID
 
 default_router = Router()
 pre_checkout_failed_reason = "Что-то пошло не так. Нет больше места для денег 😭"
@@ -56,12 +58,26 @@ async def on_pre_checkout_query(pre_checkout_query: PreCheckoutQuery):
     )
 
 @default_router.message(F.successful_payment)
-async def on_successful_payment(message: Message):
-    await message.answer(text=f"Обещаем ваши деньги обязательно пойдут на развлечения и кутеж",
-        message_effect_id="5104841245755180586",
+async def on_successful_payment(message: Message, bot: Bot):
+    async def send_user_message():
+        await message.answer(
+            text="Обещаем ваши деньги обязательно пойдут на развлечения и кутеж",
+            message_effect_id="5104841245755180586",
+        )
+
+    async def notify_chat():
+        await bot.send_message(
+            CHAT_ID,
+            text=f"Казна пополнена на {message.successful_payment.total_amount}",
+            message_effect_id="5104841245755180586",
+        )
+
+    await asyncio.gather(
+        send_user_message(),
+        notify_chat()
     )
 
-@default_router.message(IsAdmin(admins), Command("refund"))
+@default_router.message(IsAdmin(ADMINS), Command("refund"))
 async def cmd_refund(message: Message, bot: Bot, command: CommandObject):
     transaction_id = command.args
     if transaction_id is None:
