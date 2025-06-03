@@ -7,7 +7,7 @@ from TelegramBot import dp,bot
 from TelegramBot import scheduler
 async def main():
 
-    LOGGER(__name__).info("✅ Бот запущен. Ожидание сообщений и выполнение задачи каждые 2 минуты...")
+    LOGGER(__name__).info("✅ Бот запущен. Ожидание сообщений и выполнение задачи ..")
     scheduler.start()
     register_handlers(dp)
 
