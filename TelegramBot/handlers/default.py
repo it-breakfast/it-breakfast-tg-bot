@@ -31,13 +31,13 @@ async def cmd_start_2(message: Message):
 @default_router.message(F.text.regexp(r'.*одогреть общак.*'))
 async def cmd_donate(message: Message):
     text = message.text.split(" ")
-    if len(text) != 3 or not text[2].isdigit():
+    if len(text) != 3 or not text[2].isdigit() or text[2] == 0:
         return message.reply("""
                             Дружище, ты пишешь что-то странное. Вот образец:
                             подогреть общак 100
                             """)
 
-    amount = int(message.text.split(" ")[2])
+    amount = int(text[2])
 
     prices = [LabeledPrice(label="XTR", amount=amount)]
     await message.answer_invoice(
