@@ -30,17 +30,12 @@ async def cmd_start_2(message: Message):
 
 @default_router.message(F.text.regexp(r'.*одогреть общак.*'))
 async def cmd_donate(message: Message):
-    if len(message.text.split(" ")) != 3 :
-        return message.reply(f"""
-                      Дружище ты пишешь что-то странное, вот образец:
-                      подогреть общак 100
-                      """)
-
-    if not isinstance(message.text.split(" ")[2], int):
-        return message.reply(f"""
-                      Дружище ты пишешь что-то странное, вот образец:
-                      подогреть общак 100
-                      """)
+    text = message.text.split(" ")
+    if len(text) != 3 or not text[2].isdigit():
+        return message.reply("""
+                            Дружище, ты пишешь что-то странное. Вот образец:
+                            подогреть общак 100
+                            """)
 
     amount = int(message.text.split(" ")[2])
 
