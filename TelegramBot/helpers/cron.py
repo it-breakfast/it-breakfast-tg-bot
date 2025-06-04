@@ -1,6 +1,6 @@
 from TelegramBot import config
 from TelegramBot.logging import LOGGER
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import random
 import inspect
 from .message_generator import generate_message
@@ -31,7 +31,7 @@ async def check_last_message(bot):
     if message_state.last_message_time is None:
         return
         
-    current_time = datetime.now()
+    current_time = datetime.now(timezone.utc)
     time_diff = current_time - message_state.last_message_time
     await bot.send_message(chat_id, f"last_message_time: {message_state.last_message_time}")
     await bot.send_message(chat_id, f"current_time: {current_time}")
