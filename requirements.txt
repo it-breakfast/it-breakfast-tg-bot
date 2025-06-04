@@ -1,5 +1,5 @@
 aiogram
 apscheduler
 pytz
-requests
+aiohttp
 python-dotenv
