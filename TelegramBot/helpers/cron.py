@@ -25,8 +25,9 @@ async def check_last_message(bot):
         # Пробуем получить информацию о чате
         try:
             chat = await bot.get_chat(chat_id)
-            usernames = chat.active_usernames
-            await bot.send_message(chat_id, f"Активные юзернеймы чата: {usernames}")
+            admins = await bot.get_chat_administrators(chat_id)
+            admin_list = [f"@{admin.user.username}" for admin in admins if admin.user.username]
+            await bot.send_message(chat_id, f"Администраторы чата:\n" + "\n".join(admin_list))
         except Exception as e:
             await bot.send_message(chat_id, f"Ошибка при получении информации о чате: {e}")
 
