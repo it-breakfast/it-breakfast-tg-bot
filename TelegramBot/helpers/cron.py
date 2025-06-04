@@ -22,26 +22,14 @@ async def check_last_message(bot):
     Если прошло больше 6 часов, отправляет напоминание.
     """
     try:
-        # Логируем информацию о боте
-        await bot.send_message(chat_id, f"Тип объекта бота: {type(bot)}")
-        await bot.send_message(chat_id, f"Доступные методы бота: {[method for method in dir(bot) if not method.startswith('_')]}")
-        await bot.send_message(chat_id, f"Доступные атрибуты бота: {[attr for attr in dir(bot) if not callable(getattr(bot, attr))]}")
-        
         # Пробуем получить информацию о чате
         try:
             chat = await bot.get_chat(chat_id)
-            await bot.send_message(chat_id, f"Информация о чате: {chat}")
-            await bot.send_message(chat_id, f"Тип объекта чата: {type(chat)}")
-            await bot.send_message(chat_id, f"Доступные методы чата: {[method for method in dir(chat) if not method.startswith('_')]}")
+            usernames = await chat.active_usernames
+            await bot.send_message(chat_id, f"Активные юзернеймы чата: {usernames}")
         except Exception as e:
             await bot.send_message(chat_id, f"Ошибка при получении информации о чате: {e}")
 
-        # Пробуем получить историю сообщений
-        try:
-            messages = await bot.get_updates()
-            await bot.send_message(chat_id, f"Полученные обновления: {messages}")
-        except Exception as e:
-            await bot.send_message(chat_id, f"Ошибка при получении обновлений: {e}")
 
         # Продолжаем с основной логикой
         async for message in bot.get_chat_history(chat_id, limit=1):
@@ -69,8 +57,9 @@ async def check_last_message(bot):
                     await bot.send_message(chat_id, "Привет! В чате затишье — не порядок. Давайте пообщаемся!")
                 await bot.send_message(chat_id, "Отправлено напоминание о неактивности")
             except Exception as e:
-                await bot.send_message(chat_id, f"Ошибка при получении администраторов чата: {e}")
-                await bot.send_message(chat_id, "Привет! В чате затишье — не порядок. Давайте пообщаемся!")
+                # await bot.send_message(chat_id, f"Ошибка при получении администраторов чата: {e}")
+                # await bot.send_message(chat_id, "Привет! В чате затишье — не порядок. Давайте пообщаемся!")
+                pass
     except Exception as e:
-        await bot.send_message(chat_id, f"Ошибка при проверке последнего сообщения: {e}")
+        # await bot.send_message(chat_id, f"Ошибка при проверке последнего сообщения: {e}")
         LOGGER(__name__).error(f"Ошибка при проверке последнего сообщения: {e}")
