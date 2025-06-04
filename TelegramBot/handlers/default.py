@@ -70,3 +70,28 @@ async def cmd_qr(message: Message):
     buf.seek(0) 
 
     await message.reply_photo(photo = BufferedInputFile(file=buf.getvalue(),filename="qr.png"))
+
+@default_router.message(Command('link'))
+async def send_link(message: Message):
+
+    if not message.reply_to_message is not None:
+        return message.reply(""" Дружище, нужно сделать реплай на сообщение со ссылкой""")
+
+    internal_id = str(message.chat.id)[4:]
+
+    url = f"https://t.me/c/{internal_id}/{message.message_id}"
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=10,
+        border=4,
+    )
+    qr.add_data(url)
+    qr.make(fit=True)
+
+    img = qr.make_image(fill_color="black", back_color="white")
+    buf = io.BytesIO()
+    img.save(buf, format='PNG')
+    buf.seek(0) 
+
+    await message.reply_photo(photo = BufferedInputFile(file=buf.getvalue(),filename="qr.png"))
