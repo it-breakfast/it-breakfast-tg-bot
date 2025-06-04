@@ -22,7 +22,7 @@ async def check_last_message(bot):
     """
     try:
         # Получаем последнее сообщение из чата
-        messages = await bot.get_chat_history(chat_id, limit=1)
+        messages = await bot.get_messages(chat_id, limit=1)
         if not messages:
             return
 
@@ -30,7 +30,7 @@ async def check_last_message(bot):
         last_message_time = last_message.date
         
         # Проверяем, прошло ли 6 часов
-        if datetime.now(last_message_time.tzinfo) - last_message_time > timedelta(minute=4):
+        if datetime.now(last_message_time.tzinfo) - last_message_time > timedelta(minutes=4):
             try:
                 # Получаем список администраторов чата
                 admins = await bot.get_chat_administrators(chat_id)
