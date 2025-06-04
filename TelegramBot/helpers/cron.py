@@ -3,8 +3,10 @@ from TelegramBot.logging import LOGGER
 from datetime import datetime, timedelta
 import random
 import inspect
+from .deepseek import generate_message
 
 chat_id=config.CHAT_ID
+last_message_time = None  # Глобальная переменная для хранения времени последнего сообщения
 
 async def scheduled_job(bot):
     """
@@ -18,49 +20,21 @@ async def scheduled_job(bot):
 
 async def check_last_message(bot):
     """
-    Проверяет время последнего сообщения в чате.
-    Если прошло больше 6 часов, отправляет напоминание.
+    Проверяет время последнего сообщения и отправляет уведомление, если прошло более 4 минут.
     """
-    try:
-        # Пробуем получить информацию о чате
-        try:
-            chat = await bot.get_chat(chat_id)
-            admins = await bot.get_chat_administrators(chat_id)
-            admin_list = [f"@{admin.user.username}" for admin in admins if admin.user.username]
-            await bot.send_message(chat_id, f"Администраторы чата:\n" + "\n".join(admin_list))
-        except Exception as e:
-            await bot.send_message(chat_id, f"Ошибка при получении информации о чате: {e}")
-
-
-        # Продолжаем с основной логикой
-        async for message in bot.get_chat_history(chat_id, limit=1):
-            last_message = message
-            break
-        else:
-            return
-
-        last_message_time = last_message.date
+    global last_message_time
+    
+    if last_message_time is None:
+        return
         
-        # Проверяем, прошло ли 6 часов
-        if datetime.now(last_message_time.tzinfo) - last_message_time > timedelta(minutes=4):
-            try:
-                # Получаем список администраторов чата
-                admins = await bot.get_chat_administrators(chat_id)
-                if admins:
-                    # Выбираем случайного администратора
-                    random_admin = random.choice(admins)
-                    username = random_admin.user.username
-                    if username:
-                        await bot.send_message(chat_id, f"Привет! В чате затишье — не порядок. @{username}, что нового у тебя?")
-                    else:
-                        await bot.send_message(chat_id, "Привет! В чате затишье — не порядок. Давайте пообщаемся!")
-                else:
-                    await bot.send_message(chat_id, "Привет! В чате затишье — не порядок. Давайте пообщаемся!")
-                await bot.send_message(chat_id, "Отправлено напоминание о неактивности")
-            except Exception as e:
-                # await bot.send_message(chat_id, f"Ошибка при получении администраторов чата: {e}")
-                # await bot.send_message(chat_id, "Привет! В чате затишье — не порядок. Давайте пообщаемся!")
-                pass
-    except Exception as e:
-        # await bot.send_message(chat_id, f"Ошибка при проверке последнего сообщения: {e}")
-        LOGGER(__name__).error(f"Ошибка при проверке последнего сообщения: {e}")
+    current_time = datetime.now()
+    time_diff = current_time - last_message_time
+    
+    if time_diff > timedelta(minutes=4):
+        try:
+            message = await generate_message()
+            await bot.send_message(chat_id, message)
+            LOGGER(__name__).info("Отправлено сгенерированное сообщение в чат")
+        except Exception as e:
+            LOGGER(__name__).info(f"Не удалось отправить сообщение: {e}")
+   
