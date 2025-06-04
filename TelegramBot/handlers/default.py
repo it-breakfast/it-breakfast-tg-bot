@@ -24,6 +24,7 @@ import qrcode
 
 default_router = Router()
 message_time_router = Router()
+
 pre_checkout_failed_reason = "Что-то пошло не так. Нет больше места для денег 😭"
 pre_checkout_ok_reason = "Ваши денежки у нас"
 
@@ -34,8 +35,6 @@ async def save_message_time(message: Message) -> None:
     """
     message_state.last_message_time = message.date
     LOGGER(__name__).info(f"Сохранено время последнего сообщения: {message.date}")
-
-default_router.include_router(message_time_router)
 
 @default_router.message(CommandStart())
 async def default_handler(message: Message) -> None:
