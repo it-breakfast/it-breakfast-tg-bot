@@ -2,6 +2,7 @@ from TelegramBot import config
 from TelegramBot.logging import LOGGER
 from datetime import datetime, timedelta
 import random
+import inspect
 
 chat_id=config.CHAT_ID
 
@@ -21,12 +22,34 @@ async def check_last_message(bot):
     Если прошло больше 6 часов, отправляет напоминание.
     """
     try:
-        # Получаем последнее сообщение из чата
-        messages = await bot.get_messages(chat_id, limit=1)
-        if not messages:
+        # Логируем информацию о боте
+        await bot.send_message(chat_id, f"Тип объекта бота: {type(bot)}")
+        await bot.send_message(chat_id, f"Доступные методы бота: {[method for method in dir(bot) if not method.startswith('_')]}")
+        await bot.send_message(chat_id, f"Доступные атрибуты бота: {[attr for attr in dir(bot) if not callable(getattr(bot, attr))]}")
+        
+        # Пробуем получить информацию о чате
+        try:
+            chat = await bot.get_chat(chat_id)
+            await bot.send_message(chat_id, f"Информация о чате: {chat}")
+            await bot.send_message(chat_id, f"Тип объекта чата: {type(chat)}")
+            await bot.send_message(chat_id, f"Доступные методы чата: {[method for method in dir(chat) if not method.startswith('_')]}")
+        except Exception as e:
+            await bot.send_message(chat_id, f"Ошибка при получении информации о чате: {e}")
+
+        # Пробуем получить историю сообщений
+        try:
+            messages = await bot.get_updates()
+            await bot.send_message(chat_id, f"Полученные обновления: {messages}")
+        except Exception as e:
+            await bot.send_message(chat_id, f"Ошибка при получении обновлений: {e}")
+
+        # Продолжаем с основной логикой
+        async for message in bot.get_chat_history(chat_id, limit=1):
+            last_message = message
+            break
+        else:
             return
 
-        last_message = messages[0]
         last_message_time = last_message.date
         
         # Проверяем, прошло ли 6 часов
@@ -44,9 +67,8 @@ async def check_last_message(bot):
                         await bot.send_message(chat_id, "Привет! В чате затишье — не порядок. Давайте пообщаемся!")
                 else:
                     await bot.send_message(chat_id, "Привет! В чате затишье — не порядок. Давайте пообщаемся!")
-                LOGGER(__name__).info("Отправлено напоминание о неактивности")
+                await bot.send_message(chat_id, "Отправлено напоминание о неактивности")
             except Exception as e:
-                LOGGER(__name__).error(f"Ошибка при получении администраторов чата: {e}")
                 await bot.send_message(chat_id, f"Ошибка при получении администраторов чата: {e}")
                 await bot.send_message(chat_id, "Привет! В чате затишье — не порядок. Давайте пообщаемся!")
     except Exception as e:
