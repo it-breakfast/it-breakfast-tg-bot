@@ -2,7 +2,7 @@ import asyncio
 from datetime import datetime
 
 from TelegramBot.keyboards.main import get_menu_kb
-from TelegramBot.helpers.cron import last_message_time
+from TelegramBot.helpers.cron import message_state
 
 from aiogram import Bot
 from aiogram import Router, F
@@ -20,14 +20,13 @@ default_router = Router()
 pre_checkout_failed_reason = "Что-то пошло не так. Нет больше места для денег 😭"
 pre_checkout_ok_reason = "Ваши денежки у нас"
 
-@default_router.message()
+@default_router.message(continue_handling=True)
 async def save_message_time(message: Message) -> None:
     """
     Сохраняет время последнего сообщения в чате.
     """
-    global last_message_time
     if message.chat.id == CHAT_ID:
-        last_message_time = message.date
+        message_state.last_message_time = message.date
 
 @default_router.message(CommandStart())
 async def default_handler(message: Message) -> None:

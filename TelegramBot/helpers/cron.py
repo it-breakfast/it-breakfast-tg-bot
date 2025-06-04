@@ -6,7 +6,12 @@ import inspect
 from .message_generator import generate_message
 
 chat_id=config.CHAT_ID
-last_message_time = None  # Глобальная переменная для хранения времени последнего сообщения
+
+class MessageState:
+    def __init__(self):
+        self.last_message_time = None
+
+message_state = MessageState()
 
 async def scheduled_job(bot):
     """
@@ -22,14 +27,12 @@ async def check_last_message(bot):
     """
     Проверяет время последнего сообщения и отправляет уведомление, если прошло более 4 минут.
     """
-    global last_message_time
-    
-    if last_message_time is None:
+    if message_state.last_message_time is None:
         return
         
     current_time = datetime.now()
-    time_diff = current_time - last_message_time
-    await bot.send_message(chat_id, f"last_message_time: {last_message_time}")
+    time_diff = current_time - message_state.last_message_time
+    await bot.send_message(chat_id, f"last_message_time: {message_state.last_message_time}")
     await bot.send_message(chat_id, f"current_time: {current_time}")
     await bot.send_message(chat_id, f"time_diff: {time_diff}")
    
