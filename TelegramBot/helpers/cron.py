@@ -3,7 +3,7 @@ from TelegramBot.logging import LOGGER
 from datetime import datetime, timedelta
 import random
 import inspect
-from .deepseek import generate_message
+from .message_generator import generate_message
 
 chat_id=config.CHAT_ID
 last_message_time = None  # Глобальная переменная для хранения времени последнего сообщения
