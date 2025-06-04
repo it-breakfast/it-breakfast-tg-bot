@@ -3,6 +3,7 @@ from datetime import datetime
 
 from TelegramBot.keyboards.main import get_menu_kb
 from TelegramBot.helpers.cron import message_state
+from TelegramBot.logging import LOGGER
 
 from aiogram import Bot
 from aiogram import Router, F
@@ -28,6 +29,7 @@ async def save_message_time(message: Message) -> None:
     """
     if message.chat.id == CHAT_ID:
         message_state.last_message_time = message.date
+    LOGGER(__name__).info(f"Сохранено время последнего сообщения: {message.date}")
 
 default_router.include_router(message_time_router)
 
