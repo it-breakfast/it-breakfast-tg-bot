@@ -33,9 +33,6 @@ async def check_last_message(bot):
         
     current_time = datetime.now(timezone.utc)
     time_diff = current_time - message_state.last_message_time
-    await bot.send_message(chat_id, f"last_message_time: {message_state.last_message_time}")
-    await bot.send_message(chat_id, f"current_time: {current_time}")
-    await bot.send_message(chat_id, f"time_diff: {time_diff}")
    
     if time_diff > timedelta(minutes=0):
         try:
