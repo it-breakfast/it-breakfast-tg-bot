@@ -27,8 +27,7 @@ async def save_message_time(message: Message) -> None:
     """
     Сохраняет время последнего сообщения в чате.
     """
-    if message.chat.id == CHAT_ID:
-        message_state.last_message_time = message.date
+    message_state.last_message_time = message.date
     LOGGER(__name__).info(f"Сохранено время последнего сообщения: {message.date}")
 
 default_router.include_router(message_time_router)
