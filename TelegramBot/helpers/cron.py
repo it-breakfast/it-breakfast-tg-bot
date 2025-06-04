@@ -37,7 +37,7 @@ async def check_last_message(bot):
     await bot.send_message(chat_id, f"current_time: {current_time}")
     await bot.send_message(chat_id, f"time_diff: {time_diff}")
    
-    if time_diff > timedelta(minutes=4):
+    if time_diff > timedelta(minutes=0):
         try:
             message = await generate_message()
             await bot.send_message(chat_id, message)
