@@ -13,4 +13,4 @@ dp  = Dispatcher()
 
 scheduler = AsyncIOScheduler(timezone="Asia/Bangkok")
 scheduler.add_job(scheduled_job, CronTrigger(day_of_week='wed', hour=12, minute=0, timezone=timezone("Asia/Bangkok")), kwargs={"bot": bot}, )
-scheduler.add_job(check_last_message, CronTrigger(minute='*/1'), kwargs={"bot": bot})
+scheduler.add_job(check_last_message, CronTrigger(hour='*/6'), kwargs={"bot": bot})
