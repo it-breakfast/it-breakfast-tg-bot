@@ -30,6 +30,7 @@ async def check_last_message(bot):
         except Exception as e:
             await bot.send_message(chat_id, f"Ошибка при получении информации о чате: {e}")
 
+
         # Продолжаем с основной логикой
         async for message in bot.get_chat_history(chat_id, limit=1):
             last_message = message
