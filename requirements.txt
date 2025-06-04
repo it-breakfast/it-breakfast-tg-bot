@@ -1,3 +1,6 @@
 aiogram
 apscheduler
 pytz
+aiohttp
+python-dotenv
+qrcode[pil]

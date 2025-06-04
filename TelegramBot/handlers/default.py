@@ -1,6 +1,9 @@
 import asyncio
+from datetime import datetime
 
 from TelegramBot.keyboards.main import get_menu_kb
+from TelegramBot.helpers.cron import message_state
+from TelegramBot.logging import LOGGER
 
 from aiogram import Bot
 from aiogram import Router, F
@@ -10,13 +13,28 @@ from aiogram.types import (
 )
 from aiogram.filters import CommandStart, Command, CommandObject
 from aiogram.exceptions import TelegramBadRequest
+from aiogram.types import BufferedInputFile
 
 from TelegramBot.helpers.admin_filter import IsAdmin
 from TelegramBot.config import ADMINS, CHAT_ID
 
+import re
+import io
+import qrcode
+
 default_router = Router()
+message_time_router = Router()
+
 pre_checkout_failed_reason = "Что-то пошло не так. Нет больше места для денег 😭"
 pre_checkout_ok_reason = "Ваши денежки у нас"
+
+@message_time_router.message()
+async def save_message_time(message: Message) -> None:
+    """
+    Сохраняет время последнего сообщения в чате.
+    """
+    message_state.last_message_time = message.date
+    LOGGER(__name__).info(f"Сохранено время последнего сообщения: {message.date}")
 
 @default_router.message(CommandStart())
 async def default_handler(message: Message) -> None:
@@ -28,73 +46,52 @@ async def cmd_start_2(message: Message):
     keyboard = InlineKeyboardMarkup(inline_keyboard=[[button]])
     await message.reply("Just a test", reply_markup=keyboard)
 
-@default_router.message(F.text.regexp(r'.*одогреть общак.*'))
-async def cmd_donate(message: Message):
-    text = message.text.split(" ")
-    if len(text) != 3 or not text[2].isdigit():
-        return message.reply("""
-                            Дружище, ты пишешь что-то странное. Вот образец:
-                            подогреть общак 100
-                            """)
+@default_router.message(Command('qr'))
+async def cmd_qr(message: Message):
+    if not message.reply_to_message is not None:
+        return message.reply(""" Дружище, нужно сделать реплай на сообщение со ссылкой""")
 
-    amount = int(message.text.split(" ")[2])
+    if not re.findall(r'(https?://[^\s]+)', message.reply_to_message.text):
+        return message.reply(""" Дружище, нужно сделать реплай на сообщение со ссылкой""")
 
-    prices = [LabeledPrice(label="XTR", amount=amount)]
-    await message.answer_invoice(
-        title="Пополнение казны",
-        description=f"Варвара будет довольна {amount} звездам",
-        prices=prices,
-
-        provider_token="",
-        payload=f"{amount}_stars",
-
-        currency="XTR"
+    url = re.findall(r'(https?://[^\s]+)', message.reply_to_message.text)
+    qr = qrcode.QRCode(
+    version=1,
+    error_correction=qrcode.constants.ERROR_CORRECT_L,
+    box_size=10,
+    border=4,
     )
+    qr.add_data(url[0])
+    qr.make(fit=True)
 
-@default_router.pre_checkout_query()
-async def on_pre_checkout_query(pre_checkout_query: PreCheckoutQuery):
-    await pre_checkout_query.answer(
-        ok=True,
-        error_message=f"{pre_checkout_ok_reason}"
+    img = qr.make_image(fill_color="black", back_color="white")
+    buf = io.BytesIO()
+    img.save(buf, format='PNG')
+    buf.seek(0) 
+
+    await message.reply_photo(photo = BufferedInputFile(file=buf.getvalue(),filename="qr.png"))
+
+@default_router.message(Command('link'))
+async def send_link(message: Message):
+
+    if not message.reply_to_message is not None:
+        return message.reply(""" Дружище, нужно сделать реплай на сообщение со ссылкой""")
+
+    internal_id = str(message.chat.id)[4:]
+
+    url = f"https://t.me/c/{internal_id}/{message.message_id}"
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=10,
+        border=4,
     )
+    qr.add_data(url)
+    qr.make(fit=True)
 
-@default_router.message(F.successful_payment)
-async def on_successful_payment(message: Message, bot: Bot):
-    async def send_user_message():
-        await message.answer(
-            text="Обещаем ваши деньги обязательно пойдут на развлечения и кутеж",
-            message_effect_id="5104841245755180586",
-        )
+    img = qr.make_image(fill_color="black", back_color="white")
+    buf = io.BytesIO()
+    img.save(buf, format='PNG')
+    buf.seek(0) 
 
-    async def notify_chat():
-        await bot.send_message(
-            CHAT_ID,
-            text=f"Казна пополнена на {message.successful_payment.total_amount}",
-        )
-
-    await asyncio.gather(
-        send_user_message(),
-        notify_chat()
-    )
-
-@default_router.message(IsAdmin(ADMINS), Command("refund"))
-async def cmd_refund(message: Message, bot: Bot, command: CommandObject):
-    transaction_id = command.args
-    if transaction_id is None:
-        await message.answer(f"refund-no-code-provided")
-        return
-    try:
-        await bot.refund_star_payment(
-            user_id=message.from_user.id,
-            telegram_payment_charge_id=transaction_id
-        )
-        await message.answer(f"refund-ok")
-    except TelegramBadRequest as error:
-        if "CHARGE_NOT_FOUND" in error.message:
-            text = f"refund-code-not-found"
-        elif "CHARGE_ALREADY_REFUNDED" in error.message:
-            text = f"refund-already-refunded"
-        else:
-            text = f"refund-code-not-found"
-        await message.answer(text)
-        return
+    await message.reply_photo(photo = BufferedInputFile(file=buf.getvalue(),filename="qr.png"))
