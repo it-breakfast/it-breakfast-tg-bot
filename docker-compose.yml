@@ -11,3 +11,4 @@ services:
     environment:
       BOT_TOKEN: ${BOT_TOKEN}
       CHAT_ID: ${CHAT_ID}
+      DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY}
