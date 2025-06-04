@@ -27,6 +27,7 @@ async def check_last_message(bot):
     """
     Проверяет время последнего сообщения и отправляет уведомление, если прошло более 4 минут.
     """
+    LOGGER(__name__).info(f"last_message_time: {message_state.last_message_time}")
     if message_state.last_message_time is None:
         return
         
