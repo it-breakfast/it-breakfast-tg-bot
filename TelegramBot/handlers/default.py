@@ -17,16 +17,19 @@ from TelegramBot.helpers.admin_filter import IsAdmin
 from TelegramBot.config import ADMINS, CHAT_ID
 
 default_router = Router()
+message_time_router = Router()
 pre_checkout_failed_reason = "Что-то пошло не так. Нет больше места для денег 😭"
 pre_checkout_ok_reason = "Ваши денежки у нас"
 
-@default_router.message(continue_handling=True)
+@message_time_router.message()
 async def save_message_time(message: Message) -> None:
     """
     Сохраняет время последнего сообщения в чате.
     """
     if message.chat.id == CHAT_ID:
         message_state.last_message_time = message.date
+
+default_router.include_router(message_time_router)
 
 @default_router.message(CommandStart())
 async def default_handler(message: Message) -> None:
