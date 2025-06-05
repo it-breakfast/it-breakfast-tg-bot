@@ -15,7 +15,7 @@ from aiogram.filters import CommandStart, Command, CommandObject
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.types import BufferedInputFile
 
-from TelegramBot.helpers.admin_filter import IsAdmin
+from TelegramBot.helpers.admin_filter import IsAdmin, IsPinned
 from TelegramBot.config import ADMINS, CHAT_ID
 from TelegramBot import bot
 
@@ -38,7 +38,7 @@ async def save_message_time(message: Message) -> None:
 async def default_handler(message: Message) -> None:
     await message.answer('Извините, я не говорю по-русски.', )
 
-@default_router.message(IsAdmin(ADMINS),lambda message: message.pinned_message is not None)
+@default_router.message(IsAdmin(ADMINS), IsPinned())
 async def default_pinned_message(message: Message) -> None:
     pinned_message_id = message.pinned_message.message_id
     await bot.send_message(
