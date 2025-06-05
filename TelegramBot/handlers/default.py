@@ -25,9 +25,6 @@ import qrcode
 default_router = Router()
 message_time_router = Router()
 
-pre_checkout_failed_reason = "Что-то пошло не так. Нет больше места для денег 😭"
-pre_checkout_ok_reason = "Ваши денежки у нас"
-
 @message_time_router.message()
 async def save_message_time(message: Message) -> None:
     """
@@ -39,6 +36,10 @@ async def save_message_time(message: Message) -> None:
 @default_router.message(CommandStart())
 async def default_handler(message: Message) -> None:
     await message.answer('Извините, я не говорю по-русски.', )
+
+@default_router.message(lambda message: message.pinned_message is not None)
+async def default_pinned_message(message: Message) -> None:
+    await message.reply('Боги указали нам место. Славься великая @bashechka !', )
 
 @default_router.message(Command('test_k'))
 async def cmd_start_2(message: Message):
