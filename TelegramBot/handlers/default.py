@@ -43,7 +43,7 @@ async def default_pinned_message(message: Message) -> None:
     pinned_message_id = message.pinned_message.message_id
     await bot.send_message(
         chat_id=message.chat.id,
-        text="Боги указали нам место. Славься великая @bashechka !",
+        text="Hам указали место. Славься великая @bashechka !",
         reply_to_message_id=pinned_message_id
     )
 
