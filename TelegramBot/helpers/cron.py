@@ -39,6 +39,7 @@ async def check_last_message(bot):
             message = await generate_message()
             await bot.send_message(chat_id, message)
             LOGGER(__name__).info("Отправлено сгенерированное сообщение в чат")
+            message_state.last_message_time = current_time
         except Exception as e:
             LOGGER(__name__).info(f"Не удалось отправить сообщение: {e}")
    
