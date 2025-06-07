@@ -16,7 +16,7 @@ class IsPinned(BaseFilter):
 
 def IsNight(x: datetime):
     start = datetime.time(21, 0, 0)
-    end = datetime.time(9, 0, 0)
+    end = datetime.time(11, 0, 0)
     if start <= end:
         return start <= x.time() <= end
     else:
