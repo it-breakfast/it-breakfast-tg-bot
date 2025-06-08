@@ -2,7 +2,7 @@ import asyncio
 from datetime import datetime
 
 from TelegramBot.keyboards.main import get_menu_kb
-from TelegramBot.helpers.cron import message_state
+from TelegramBot.helpers.cron import message_state, utc_to_local
 from TelegramBot.logging import LOGGER
 
 from aiogram import Bot
@@ -31,8 +31,8 @@ async def save_message_time(message: Message) -> None:
     """
     Сохраняет время последнего сообщения в чате.
     """
-    message_state.last_message_time = message.date
-    LOGGER(__name__).info(f"Сохранено время последнего сообщения: {message.date}")
+    message_state.last_message_time = utc_to_local(message.date)
+    LOGGER(__name__).info(f"Сохранено время последнего сообщения: {message_state.last_message_time}")
 
 @default_router.message(CommandStart())
 async def default_handler(message: Message) -> None:
