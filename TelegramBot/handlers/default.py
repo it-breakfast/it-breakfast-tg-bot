@@ -8,8 +8,7 @@ from TelegramBot.logging import LOGGER
 from aiogram import Bot
 from aiogram import Router, F
 from aiogram.types import (
-    Message, InlineKeyboardButton, InlineKeyboardMarkup, LabeledPrice, PreCheckoutQuery,
-    
+    Message, InlineKeyboardButton, InlineKeyboardMarkup, LabeledPrice, PreCheckoutQuery,  
 )
 from aiogram.filters import CommandStart, Command, CommandObject
 from aiogram.exceptions import TelegramBadRequest
@@ -35,6 +34,10 @@ async def save_message_time(message: Message) -> None:
     LOGGER(__name__).info(f"Сохранено время последнего сообщения: {message_state.last_message_time}")
 
 @default_router.message(CommandStart())
+async def default_handler(message: Message) -> None:
+    await message.answer('Извините, я не говорю по-русски.', )
+
+@default_router.channel_post()
 async def default_handler(message: Message) -> None:
     await message.answer('Извините, я не говорю по-русски.', )
 

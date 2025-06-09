@@ -5,6 +5,7 @@ from TelegramBot.handlers import register_handlers
 from TelegramBot.logging import LOGGER
 from TelegramBot import dp,bot
 from TelegramBot import scheduler
+from TelegramBot import client_userbot
 
 async def main():
 
