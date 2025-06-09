@@ -39,14 +39,6 @@ async def typing(chat_id: int):
             await task
 
 
-
-@ai_router.message(Command('last100'))
-async def last100(message: Message):
-    await bot.send_chat_action(chat_id=config.CHAT_ID, action="typing")
-    text = await get_last_100_messages()
-    ai_anwser= await response_openai(text, prompt)
-    await message.answer(str(ai_anwser))
-
 @ai_router.message(Command('last100'))
 async def last100(message: Message):
 
