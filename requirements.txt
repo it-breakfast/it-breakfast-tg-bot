@@ -4,3 +4,5 @@ pytz
 aiohttp
 python-dotenv
 qrcode[pil]
+telethon
+openai
