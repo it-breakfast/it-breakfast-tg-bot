@@ -54,7 +54,7 @@ async def last100(message: Message):
         ai_answer = await response_openai("gpt-4.1", text, prompt)
     await message.answer(str(ai_answer))
 
-@ai_router.message(F.text.lower().contains("эй бот")
+@ai_router.message(F.text.lower().contains("эй бот"))
 async def hey_bot(message: Message):
     chat_id = message.chat.id
     async with typing(chat_id):
