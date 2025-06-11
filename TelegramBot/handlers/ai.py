@@ -42,10 +42,8 @@ async def _typing_loop(chat_id: int):
 async def typing(chat_id: int):
     task = asyncio.create_task(_typing_loop(chat_id))
     try:
-        print(f"typint start id {chat_id}")
         yield                           # даём выполнить «основную» работу
     finally:
-        print(f"typint stop id {chat_id}")
         task.cancel()                   # выключаем «typing»
         with contextlib.suppress(asyncio.CancelledError):
             await task

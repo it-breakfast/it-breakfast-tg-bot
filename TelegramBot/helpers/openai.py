@@ -1,12 +1,12 @@
-from openai import OpenAI
+from openai import AsyncOpenAI
 from TelegramBot import config
 
 import base64
 
-client_openai = OpenAI(api_key=config.OPENAI_API_KEY)
+client_openai = AsyncOpenAI(api_key=config.OPENAI_API_KEY)
 
 async def response_openai(model, text, prompt):
-    response_openai = client_openai.responses.create(
+    response_openai = await client_openai.responses.create(
     model=str(model),
     instructions = prompt,
     input=str(text),
@@ -14,7 +14,7 @@ async def response_openai(model, text, prompt):
     return response_openai.output_text
 
 async def response_openai_image(text):
-    response = client_openai.responses.create(
+    response = await client_openai.responses.create(
         model="gpt-4.1-mini",
         input=str(text),
         tools=[
