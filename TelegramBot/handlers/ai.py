@@ -2,9 +2,12 @@ from aiogram import Router, F
 from aiogram.filters import Command
 from aiogram.types import Message
 from TelegramBot.helpers.userbot import get_last_100_messages
-from TelegramBot.helpers.openai import response_openai
+from TelegramBot.helpers.openai import response_openai, response_openai_image
 from TelegramBot import bot
 from TelegramBot import config
+
+from aiogram.types import BufferedInputFile
+import io
 
 import contextlib
 import asyncio
@@ -54,9 +57,18 @@ async def last100(message: Message):
         ai_answer = await response_openai("gpt-4.1", text, prompt)
     await message.answer(str(ai_answer))
 
+@ai_router.message(F.text.lower().contains("эй бот"), F.text.lower().contains("нарисуй"))
+async def hey_bot_image(message: Message):
+    chat_id = message.chat.id
+    async with typing(chat_id):
+        img = await response_openai_image(message.text)
+
+    await message.reply_photo(photo = BufferedInputFile(file=img, filename="a.png"))
+
 @ai_router.message(F.text.lower().contains("эй бот"))
 async def hey_bot(message: Message):
     chat_id = message.chat.id
     async with typing(chat_id):
         ai_answer = await response_openai("gpt-4.1-mini", message.text, prompt_hey_bot)
     await message.answer(str(ai_answer))
+
