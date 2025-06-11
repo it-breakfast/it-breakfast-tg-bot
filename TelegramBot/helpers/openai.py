@@ -3,9 +3,9 @@ from TelegramBot import config
 
 client_openai = OpenAI(api_key=config.OPENAI_API_KEY)
 
-async def response_openai(text, prompt):
+async def response_openai(model, text, prompt):
     response_openai = client_openai.responses.create(
-    model="gpt-4o",
+    model=str(model),
     instructions = prompt,
     input=str(text),
     )

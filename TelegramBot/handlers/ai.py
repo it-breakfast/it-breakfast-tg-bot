@@ -18,6 +18,13 @@ prompt = """
 Не говори в целом про чат, говори о том что было конкретное в сообщениях
 """
 
+prompt_hey_bot = """
+Ты чат-бот помощник чата "IT-завтрак Пхукет".
+Отвечай на русском языке.
+Ответ должен занимать строго не более не более 600 символов.
+"""
+
+
 async def _typing_loop(chat_id: int):
     try:
         while True:
@@ -41,10 +48,15 @@ async def typing(chat_id: int):
 
 @ai_router.message(Command('last100'))
 async def last100(message: Message):
-
     chat_id = message.chat.id
     async with typing(chat_id):
         text = await get_last_100_messages()
-        ai_answer = await response_openai(text, prompt)
+        ai_answer = await response_openai("gpt-4.1", text, prompt)
+    await message.answer(str(ai_answer))
 
+@ai_router.message(F.text.lower().contains("эй бот"))
+async def hey_bot(message: Message):
+    chat_id = message.chat.id
+    async with typing(chat_id):
+        ai_answer = await response_openai("gpt-4.1-mini", message.text, prompt_hey_bot)
     await message.answer(str(ai_answer))

@@ -37,10 +37,6 @@ async def save_message_time(message: Message) -> None:
 async def default_handler(message: Message) -> None:
     await message.answer('Извините, я не говорю по-русски.', )
 
-@default_router.channel_post()
-async def default_handler(message: Message) -> None:
-    await message.answer('Извините, я не говорю по-русски.', )
-
 @default_router.message(IsAdmin(ADMINS), IsPinned())
 async def default_pinned_message(message: Message) -> None:
     pinned_message_id = message.pinned_message.message_id
