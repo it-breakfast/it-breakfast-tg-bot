@@ -3,7 +3,7 @@ from TelegramBot import config
 from aiogram import Bot, Dispatcher
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
-from TelegramBot.helpers.cron import scheduled_job, check_last_message, reset_limits_job
+from TelegramBot.helpers.cron import scheduled_job, check_last_message, reset_limits_job, change_bot_nickname
 from pytz import timezone 
 from telethon.sync import TelegramClient
 
@@ -21,3 +21,4 @@ scheduler = AsyncIOScheduler(timezone="Asia/Bangkok")
 scheduler.add_job(scheduled_job, CronTrigger(day_of_week='wed', hour=12, minute=0, timezone=timezone("Asia/Bangkok")), kwargs={"bot": bot}, )
 scheduler.add_job(check_last_message, CronTrigger(minute='*/10', timezone=timezone("Asia/Bangkok")), kwargs={"bot": bot})
 scheduler.add_job(reset_limits_job, CronTrigger(hour=0, minute=0, timezone=timezone("Asia/Bangkok")))
+scheduler.add_job(change_bot_nickname, CronTrigger(hour=0, minute=0, timezone=timezone("Asia/Bangkok")), kwargs={"bot": bot})

@@ -16,6 +16,15 @@ class MessageState:
 
 message_state = MessageState()
 
+# Список возможных никнеймов для бота
+BOT_NICKNAMES = [
+    "IT-Завтрак Бот",
+    "Я сегодня жесткий",
+    "Я сегодня Бот",
+    "Жесткий Айтишник",
+    "Помощник Завтрака"
+]
+
 async def scheduled_job(bot):
     try:
         await bot.send_message(chat_id, "Привет @bashechka ! Время крутить барабан 🗓️")
@@ -58,4 +67,16 @@ async def reset_limits_job():
     """
     reset_limits()
     LOGGER(__name__).info("Лимиты пользователей сброшены")
+   
+
+async def change_bot_nickname(bot):
+    """
+    Меняет никнейм бота на случайный из списка.
+    """
+    try:
+        new_nickname = random.choice(BOT_NICKNAMES)
+        await bot.set_my_name(new_nickname)
+        LOGGER(__name__).info(f"Никнейм бота успешно изменен на: {new_nickname}")
+    except Exception as e:
+        LOGGER(__name__).info(f"Не удалось изменить никнейм бота: {e}")
    

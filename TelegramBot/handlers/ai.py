@@ -6,6 +6,7 @@ from TelegramBot.helpers.openai import response_openai, response_openai_image
 from TelegramBot import bot
 from TelegramBot import config
 from TelegramBot.helpers.user_limits import get_and_increment_limit
+from TelegramBot.helpers.cron import change_bot_nickname
 
 from aiogram.types import BufferedInputFile
 import io
@@ -84,6 +85,9 @@ async def hey_bot(message: Message):
         return
     if count > 4:
         return
+        
+    # Тестовый вызов смены никнейма
+    await change_bot_nickname(bot)
         
     async with typing(chat_id):
         ai_answer = await response_openai("gpt-4.1-mini", message.text, prompt_hey_bot)
