@@ -6,3 +6,6 @@ python-dotenv
 qrcode[pil]
 telethon
 openai
+googlesearch-python==1.2.3
+beautifulsoup4==4.12.2
+aiohttp==3.9.1
