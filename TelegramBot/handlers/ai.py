@@ -84,29 +84,6 @@ async def hey_bot_image(message: Message):
 
     await message.reply_photo(photo = BufferedInputFile(file=img, filename="a.png"))
 
-@ai_router.message(F.text.lower().contains("эй бот"))
-async def hey_bot(message: Message):
-    chat_id = message.chat.id
-    user_id = message.from_user.id
-
-    count = get_and_increment_limit(user_id)
-    
-    if count == 2:
-        await message.answer("Пожалуйста, пообщайся с реальными людьми.")
-        return
-    if count == 3:
-        await message.answer("Еще раз сегодня напишешь \"эй бот\", и я запишу тебя в список онанистов.")
-        return
-    if count == 4:
-        await message.answer(f"@{message.from_user.username} записан в список онанистов")
-        return
-    if count > 4:
-        return
-        
-    async with typing(chat_id):
-        ai_answer = await response_openai("gpt-4.1-mini", message.text, prompt_hey_bot)
-    await message.answer(str(ai_answer))
-
 @ai_router.message(F.text.lower().contains("эй бот"), F.text.lower().contains("найди"))
 async def hey_bot_search(message: Message):
     chat_id = message.chat.id
@@ -153,5 +130,28 @@ async def hey_bot_search(message: Message):
         current_prompt = prompt_hey_bot_search.format(search_results=search_results_text)
         
         ai_answer = await response_openai("gpt-4.1-mini", message.text, current_prompt)
+    await message.answer(str(ai_answer))
+
+@ai_router.message(F.text.lower().contains("эй бот"))
+async def hey_bot(message: Message):
+    chat_id = message.chat.id
+    user_id = message.from_user.id
+
+    count = get_and_increment_limit(user_id)
+    
+    if count == 2:
+        await message.answer("Пожалуйста, пообщайся с реальными людьми.")
+        return
+    if count == 3:
+        await message.answer("Еще раз сегодня напишешь \"эй бот\", и я запишу тебя в список онанистов.")
+        return
+    if count == 4:
+        await message.answer(f"@{message.from_user.username} записан в список онанистов")
+        return
+    if count > 4:
+        return
+        
+    async with typing(chat_id):
+        ai_answer = await response_openai("gpt-4.1-mini", message.text, prompt_hey_bot)
     await message.answer(str(ai_answer))
 
