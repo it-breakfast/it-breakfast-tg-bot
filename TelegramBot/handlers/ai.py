@@ -5,7 +5,7 @@ from TelegramBot.helpers.userbot import get_last_100_messages
 from TelegramBot.helpers.openai import response_openai, response_openai_image
 from TelegramBot import bot
 from TelegramBot import config
-from TelegramBot.helpers.user_limits import check_and_increment_limit
+from TelegramBot.helpers.user_limits import get_and_increment_limit
 
 from aiogram.types import BufferedInputFile
 import io
@@ -70,8 +70,17 @@ async def hey_bot_image(message: Message):
 async def hey_bot(message: Message):
     chat_id = message.chat.id
     user_id = message.from_user.id
-    if not check_and_increment_limit(user_id):
-        await message.answer("Нет! Хватит онанировать меня. Пообщайся с реальными людьми.")
+
+    if get_and_increment_limit(user_id) == 2:
+        await message.answer("Пожалуйста, пообщайся с реальными людьми.")
+        return
+    if get_and_increment_limit(user_id) == 3:
+        await message.answer("Еще раз сегодня напишешь \"эй бот\", и я запишу тебя в список онанистов.")
+        return
+    if get_and_increment_limit(user_id) == 4:
+        await message.answer(f"@{message.from_user.username} записан в список онанистов")
+        return
+    if get_and_increment_limit(user_id) > 4:
         return
     async with typing(chat_id):
         ai_answer = await response_openai("gpt-4.1-mini", message.text, prompt_hey_bot)
