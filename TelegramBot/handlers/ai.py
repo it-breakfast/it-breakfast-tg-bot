@@ -71,17 +71,20 @@ async def hey_bot(message: Message):
     chat_id = message.chat.id
     user_id = message.from_user.id
 
-    if get_and_increment_limit(user_id) == 2:
+    count = get_and_increment_limit(user_id)
+    
+    if count == 2:
         await message.answer("Пожалуйста, пообщайся с реальными людьми.")
         return
-    if get_and_increment_limit(user_id) == 3:
+    if count == 3:
         await message.answer("Еще раз сегодня напишешь \"эй бот\", и я запишу тебя в список онанистов.")
         return
-    if get_and_increment_limit(user_id) == 4:
+    if count == 4:
         await message.answer(f"@{message.from_user.username} записан в список онанистов")
         return
-    if get_and_increment_limit(user_id) > 4:
+    if count > 4:
         return
+        
     async with typing(chat_id):
         ai_answer = await response_openai("gpt-4.1-mini", message.text, prompt_hey_bot)
     await message.answer(str(ai_answer))
