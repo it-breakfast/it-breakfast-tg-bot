@@ -6,6 +6,7 @@ import inspect
 from .message_generator import generate_message
 from TelegramBot.helpers.admin_filter import IsNight
 from TelegramBot.helpers.local_timezone import bangkok_tz
+from TelegramBot.helpers.user_limits import reset_limits
 
 chat_id=config.CHAT_ID
 
@@ -49,4 +50,12 @@ async def check_last_message(bot):
     else:
         LOGGER(__name__).info(f"time_diff сейчас {time_diff} что меньше {timedelta(hours=6)}")
         LOGGER(__name__).info(f"IsNight {IsNight(current_time)}")
+   
+
+async def reset_limits_job():
+    """
+    Сбрасывает лимиты пользователей по расписанию.
+    """
+    reset_limits()
+    LOGGER(__name__).info("Лимиты пользователей сброшены")
    
