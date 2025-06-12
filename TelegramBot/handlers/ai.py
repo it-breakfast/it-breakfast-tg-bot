@@ -112,19 +112,19 @@ async def hey_bot_search(message: Message):
     chat_id = message.chat.id
     user_id = message.from_user.id
 
-    count = get_and_increment_limit(user_id)
+    # count = get_and_increment_limit(user_id)
     
-    if count == 2:
-        await message.answer("Пожалуйста, пообщайся с реальными людьми.")
-        return
-    if count == 3:
-        await message.answer("Еще раз сегодня напишешь \"эй бот\", и я запишу тебя в список онанистов.")
-        return
-    if count == 4:
-        await message.answer(f"@{message.from_user.username} записан в список онанистов")
-        return
-    if count > 4:
-        return
+    # # if count == 2:
+    # #     await message.answer("Пожалуйста, пообщайся с реальными людьми.")
+    # #     return
+    # # if count == 3:
+    # #     await message.answer("Еще раз сегодня напишешь \"эй бот\", и я запишу тебя в список онанистов.")
+    # #     return
+    # # if count == 4:
+    # #     await message.answer(f"@{message.from_user.username} записан в список онанистов")
+    # #     return
+    # # if count > 4:
+    # #     return
         
     async with typing(chat_id):
         # Получаем результаты поиска
