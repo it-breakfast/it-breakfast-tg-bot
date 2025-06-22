@@ -35,7 +35,10 @@ async def save_message_time(message: Message) -> None:
 
 @default_router.message(CommandStart())
 async def default_handler(message: Message) -> None:
-    await message.answer('Извините, я не говорю по-русски.', )
+    if message.chat.type == 'private':
+        await message.answer(f'Привет, я чат-бот для группы "it-завтрак пхукет" https://t.me/+Eh04QIzibOVkNGQy . Мне можно задавать различные вопросы через обращение "эй бот" и я отвечу на них про помощи llm от openai. Так же я регулярно напоминаю в чате о предстоящих встречах. Еще у меня есть функционал сбора пожертвований для развития нашего сообщества. На данный момент можно сделать пожертование телеграмм звездами написав мне сообщение "подогреть общак". Прием пожертвований в криптовалюте на данный момент на стадии подключения.')
+    else:
+        await message.answer(f'Извините, я не говорю по-русски.')
 
 @default_router.message(IsAdmin(ADMINS), IsPinned())
 async def default_pinned_message(message: Message) -> None:

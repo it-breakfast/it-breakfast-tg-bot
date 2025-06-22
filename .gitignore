@@ -5,4 +5,6 @@ venv/*
 config.env
 start.sh
 *.session
+*.session-journal
 test.py
+**/.DS_Store
