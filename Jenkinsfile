@@ -60,7 +60,7 @@ node {
                         [$class: 'RelativeTargetDirectory', relativeTargetDir: 'ansible'],
                         [$class: 'CloneOption', depth: 100, noTags: true, shallow: true]
                     ],
-                    userRemoteConfigs: [[credentialsId: dockerRegistryCreds, url: 'https://github.com/mazhora/it-breakfast-tg-bot-infra.git']]
+                    userRemoteConfigs: [[credentialsId: dockerRegistryCreds, url: 'https://github.com/it-breakfast/it-breakfast-tg-bot-infra.git']]
                 ])
             }
 
