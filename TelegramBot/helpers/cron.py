@@ -1,7 +1,6 @@
 from TelegramBot import config
 from TelegramBot.logging import LOGGER
 from datetime import datetime, timedelta, timezone, tzinfo
-import random
 import inspect
 from .message_generator import generate_message
 from TelegramBot.helpers.admin_filter import IsNight
@@ -14,15 +13,6 @@ class MessageState:
         self.last_message_time = None
 
 message_state = MessageState()
-
-# Список возможных никнеймов для бота
-BOT_NICKNAMES = [
-    "IT-Завтрак Бот",
-    "Я сегодня жесткий",
-    "Я сегодня Бот",
-    "Жесткий Айтишник",
-    "Помощник Завтрака"
-]
 
 async def scheduled_job(bot):
     try:
@@ -58,16 +48,3 @@ async def check_last_message(bot):
     else:
         LOGGER(__name__).info(f"time_diff сейчас {time_diff} что меньше {timedelta(hours=6)}")
         LOGGER(__name__).info(f"IsNight {IsNight(current_time)}")
-   
-
-async def change_bot_nickname(bot):
-    """
-    Меняет никнейм бота на случайный из списка.
-    """
-    try:
-        new_nickname = random.choice(BOT_NICKNAMES)
-        await bot.set_my_name(new_nickname)
-        LOGGER(__name__).info(f"Никнейм бота успешно изменен на: {new_nickname}")
-    except Exception as e:
-        LOGGER(__name__).info(f"Не удалось изменить никнейм бота: {e}")
-   
