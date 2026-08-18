@@ -10,5 +10,4 @@ start.sh
 test.py
 **/.DS_Store
 .claude
-CLAUDE.md
 .pytest_cache
