@@ -1,6 +1,7 @@
 .venv
 venv/*
 .vscode/*
+.vscode
 *.pyc
 config.env
 start.sh
@@ -8,3 +9,6 @@ start.sh
 *.session-journal
 test.py
 **/.DS_Store
+.claude
+CLAUDE.md
+.pytest_cache
